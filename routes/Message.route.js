@@ -44,7 +44,7 @@ export default function messageRoute(io) {
                 .skip(skip)
                 .limit(limit);
 
-            res.json({ success: true, data: finalMsgs });
+            res.json({ success: true, data: msgs });
         } catch (e) {
             res.status(500).json({ success: false, message: "Error", e });
         }
