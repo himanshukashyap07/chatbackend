@@ -40,11 +40,12 @@ export default function messageRoute(io) {
                     { sender: u2, reciver: u1 }
                 ]
             })
-                .sort({ createdAt: 1 })
+                .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit);
+                const finalMsgs = msgs.reverse();
 
-            res.json({ success: true, data: msgs });
+            res.json({ success: true, data: finalMsgs });
         } catch (e) {
             res.status(500).json({ success: false, message: "Error", e });
         }
