@@ -96,7 +96,7 @@ app.get("/", (req, res) => {
     res.send("this is the home page")
 })
 
-httpServer.listen(4000, () =>
+httpServer.listen(process.env.PORT||4000, () =>
     console.log("Server running on http://localhost:4000")
 );
 
