@@ -11,7 +11,10 @@ connectDB()
 
 
 const app = express();
-app.use(cors())
+app.use(cors({
+    origin: ["https://beketikro-paglu.vercel.app", "http://localhost:3000"],
+    credentials: true,
+}));
 app.use(express.json());
 
 const httpServer = createServer(app)
@@ -20,7 +23,7 @@ const onlineUsers = new Map();
 
 const io = new Server(httpServer, {
     cors: {
-        origin: "https://beketikro-paglu.vercel.app/",
+        origin: ["https://beketikro-paglu.vercel.app", "http://localhost:3000"],
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true
 
@@ -47,6 +50,16 @@ io.on("connection", (socket) => {
 
         io.to(room).emit("new-message", msg);
     });
+    // online-status
+    socket.on("join-user", (userId) => {
+        socket.userId = userId;
+        io.emit("user-online", userId);
+    });
+
+    socket.on("disconnect", () => {
+        io.emit("user-offline", socket.userId);
+    });
+    
 
     socket.on("edit-message", async ({ msgId, newContent }) => {
         const updatedMsg = await Msg.findByIdAndUpdate(
