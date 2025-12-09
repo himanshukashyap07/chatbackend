@@ -51,36 +51,34 @@ io.on("connection", (socket) => {
         io.to(room).emit("new-message", msg);
     });
     // online-status
-    socket.on("join-user", (userId) => {
+      socket.on("join-user", (userId) => {
         socket.userId = userId;
         io.emit("user-online", userId);
+        
     });
 
-    socket.on("disconnect", () => {
-        io.emit("user-offline", socket.userId);
-    });
     
 
-    socket.on("edit-message", async ({ msgId, newContent }) => {
+     socket.on("edit-message", async ({ room,msgId, newContent }) => {
         const updatedMsg = await Msg.findByIdAndUpdate(
             msgId,
             { content: newContent },
             { new: true }
         );
-        io.to(updatedMsg.sender.toString()).emit("message-updated", updatedMsg);
-        io.to(updatedMsg.reciver.toString()).emit("message-updated", updatedMsg);
+        
+        io.to(room).emit("message-updated",updatedMsg)
+       
     });
 
-    // DELETE MESSAGE
-    socket.on("delete-message", async ({ msgId }) => {
+   // DELETE MESSAGE
+    socket.on("delete-message", async ({room,msgId }) => {
         const deletedMsg = await Msg.findByIdAndUpdate(
             msgId,
             { isDelete: true },
             { new: true }
         );
-
-        io.to(deletedMsg.sender.toString()).emit("message-deleted", deletedMsg);
-        io.to(deletedMsg.reciver.toString()).emit("message-deleted", deletedMsg);
+        io.to(room).emit("message-deleted",deletedMsg)
+       
     });
 
     // TYPING INDICATOR
@@ -96,6 +94,7 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         for (const [userId, id] of onlineUsers.entries()) {
             if (id === socket.id) {
+                io.emit("user-offline",userId)
                 onlineUsers.delete(userId);
                 break;
             }
