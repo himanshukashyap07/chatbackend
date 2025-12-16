@@ -4,9 +4,6 @@ const msgSchema = new mongoose.Schema(
   {
     content: {
       type: String,
-      required: [true, "Content is required"],
-      trim: true,
-      minlength: [1, "Content must be at least 1 character long"],
     },
     sender: {
       type: mongoose.Schema.Types.ObjectId,
@@ -25,6 +22,13 @@ const msgSchema = new mongoose.Schema(
     isSeen:{
       type:Boolean,
       default:false
+    },
+    file: {
+      type: {type:String},
+      url: {type:String},
+      name: {type:String},
+      size: {type:Number},
+      fileType: {type:String},
     }
   },
   { timestamps: true }

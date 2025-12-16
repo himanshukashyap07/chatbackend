@@ -12,7 +12,7 @@ connectDB()
 
 const app = express();
 app.use(cors({
-    origin: ["https://beketikro-paglu.vercel.app", "http://localhost:3000"],
+    origin: ["https://beketikro-paglu.vercel.app"],
     credentials: true,
 }));
 app.use(express.json());
@@ -23,7 +23,7 @@ const onlineUsers = new Map();
 
 const io = new Server(httpServer, {
     cors: {
-        origin: ["https://beketikro-paglu.vercel.app", "http://localhost:3000"],
+        origin: ["https://beketikro-paglu.vercel.app"],
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true
 
@@ -45,8 +45,13 @@ io.on("connection", (socket) => {
         socket.join(room);
     });
 
-    socket.on("send-message", async ({ room, content, sender, reciver }) => {
-        const msg = await Msg.create({ content, sender, reciver });
+    socket.on("send-message", async ({ room, content, sender, reciver,fileData }) => {
+        const msg = await Msg.create({ 
+            content:content || "", 
+            file:fileData || null,
+            sender, 
+            reciver 
+        });
 
         io.to(room).emit("new-message", msg);
     });

@@ -25,7 +25,8 @@ export default function messageRoute(io) {
             })
                 .sort({ createdAt: -1 })
                 .skip(skip)
-                .limit(limit);
+                .limit(limit)
+                .lean();
                 const finalMsgs = msgs.reverse();
 
             res.json({ success: true, data: finalMsgs });
