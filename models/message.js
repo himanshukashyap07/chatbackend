@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 const msgSchema = new mongoose.Schema(
   {
     content: {
@@ -29,6 +30,7 @@ const msgSchema = new mongoose.Schema(
       name: {type:String},
       size: {type:Number},
       fileType: {type:String},
+       hash: {type:String}
     }
   },
   { timestamps: true }
